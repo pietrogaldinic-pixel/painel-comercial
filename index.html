@@ -304,6 +304,66 @@
     border-radius:var(--radius); padding:12px 18px; font-size:13.5px; color:var(--ink);
   }
   .newround b{color:var(--ok)}
+
+  /* ---------- etapas além da 4ª ---------- */
+  :root{ --s4:#2E6E8E; --s5:#6A4C93; }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --s4:#4F98BC; --s5:#9478C4; } }
+  :root[data-theme="dark"]{ --s4:#4F98BC; --s5:#9478C4; }
+
+  /* ---------- nova rodada ---------- */
+  .rtab.add{color:var(--dourado); border-left:1px dashed rgba(254,198,65,.35); margin-left:6px}
+  .rtab.add span{opacity:.8}
+  .rtab.add:hover{color:#FFD469; background:rgba(254,198,65,.08)}
+
+  .drawer.rf{width:min(560px,100%)}
+  .drawer.rf .body{gap:18px; overflow-x:hidden}
+  .drawer.rf .body > div, .rf-row > div{min-width:0}
+  .drawer.rf footer{align-items:center}
+  .drawer.rf footer .feedback{margin:0}
+  .rf-hint{font-size:11.5px; color:var(--ink-faint); margin-top:5px}
+  .rf-hint b{color:var(--ink-soft)}
+  .drawer input[type=date]{
+    font-family:"JetBrains Mono",monospace; font-size:12.5px; padding:7px 9px; border-radius:8px;
+    border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink); color-scheme:light dark; width:100%;
+  }
+  .rf-row{display:grid; grid-template-columns:auto 1fr 1fr; gap:12px; align-items:end}
+  @media (max-width:520px){ .rf-row{grid-template-columns:1fr 1fr} .rf-row > div:first-child{grid-column:1 / -1} }
+
+  .seg{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px}
+  .seg button{
+    border:1px solid var(--line-strong); background:var(--surface); border-radius:9px; padding:9px 8px; cursor:pointer;
+    font-weight:700; font-size:13px; color:var(--ink); display:flex; flex-direction:column; gap:2px; align-items:center;
+  }
+  .seg button small{font-weight:500; font-size:11px; color:var(--ink-faint)}
+  .seg button:hover{border-color:var(--vinho)}
+  .seg button[aria-checked="true"]{background:var(--vinho-deep); border-color:var(--vinho); color:#FFF3FA; box-shadow:inset 0 0 0 1px var(--vinho)}
+  .seg button[aria-checked="true"] small{color:#F2C6DE}
+
+  .stepper{display:inline-flex; align-items:center; border:1px solid var(--line-strong); border-radius:9px; overflow:hidden; background:var(--surface)}
+  .stepper button{width:34px; height:34px; border:0; background:none; cursor:pointer; font-size:17px; font-weight:700; color:var(--ink)}
+  .stepper button:hover{background:var(--surface-2)}
+  .stepper span{min-width:34px; text-align:center; font-weight:700; font-size:15px}
+
+  .datelist{display:flex; flex-direction:column; gap:6px}
+  .dl-row{display:grid; grid-template-columns:auto 1fr minmax(0,150px); gap:10px; align-items:center; font-size:13px; font-weight:600}
+  .dl-row .sq{width:20px; height:20px; border-radius:6px; display:grid; place-items:center; color:#fff; font-size:10px; font-weight:800; font-family:"JetBrains Mono",monospace}
+
+  .people{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px}
+  .person{
+    display:inline-flex; align-items:center; gap:6px; padding:5px 6px 5px 11px; border-radius:999px;
+    background:var(--surface-2); border:1px solid var(--line); font-size:13px; font-weight:600;
+  }
+  .person button{border:0; background:none; cursor:pointer; color:var(--ink-faint); width:20px; height:20px; border-radius:50%; font-size:11px}
+  .person button:hover{background:var(--late-bg); color:var(--late)}
+  .addperson{display:flex; gap:8px}
+  .addperson input{flex:1}
+
+  .rf-preview{overflow-x:auto; border:1px solid var(--line); border-radius:9px}
+  .rf-preview table{min-width:0}
+  .rf-preview th, .rf-preview td{padding:6px 10px; font-size:12px; white-space:nowrap}
+  .rf-preview thead th{background:#2F5597; color:#fff; letter-spacing:.03em}
+  .rf-preview thead th .d{color:#DDE6F7; font-style:italic}
+  .rf-preview .cell{width:24px; height:22px; font-size:12px}
 </style>
 
 <header class="top">
@@ -359,7 +419,7 @@
         <div class="box" id="syncBox" hidden>
           <h3>Sincronizar na mão</h3>
           <p>Este navegador não conseguiu ler a planilha sozinho. Abra a planilha, selecione tudo (Ctrl+A), copie (Ctrl+C) e dê <b>Ctrl+V em qualquer lugar do painel</b> — ou cole aqui e clique no botão. O que você colar entra na <b>rodada selecionada lá em cima</b>, então confira a aba antes.</p>
-          <textarea class="paste" id="pasteBox" placeholder="Vendedor&#9;Formular lista de leads&#9;1ª mensagem&#9;…&#10;&#9;08/09&#9;09/09&#9;…&#10;Enzo Prata&#9;TRUE&#9;FALSE&#9;…"></textarea>
+          <textarea class="paste" id="pasteBox" placeholder="Vendedor&#9;1ª mensagem&#9;2ª mensagem&#9;…&#10;&#9;15/09&#9;17/09&#9;…&#10;Enzo Prata&#9;TRUE&#9;FALSE&#9;…"></textarea>
           <div class="btns">
             <button class="btn btn-primary btn-sm" id="btnParse">Aplicar dados colados</button>
           </div>
@@ -407,31 +467,55 @@
   </footer>
 </aside>
 
+<aside class="drawer rf" id="roundForm" hidden aria-label="Nova rodada">
+  <header>
+    <div class="k">Nova rodada</div>
+    <div class="to" id="rfTitle">Criar aba na planilha<small id="rfBase">lendo a rodada anterior…</small></div>
+    <button class="closex" id="rfClose" aria-label="Fechar">✕</button>
+  </header>
+  <div class="body" id="rfBody"></div>
+  <footer>
+    <button class="btn btn-primary" id="rfCreate">Criar rodada na planilha</button>
+    <span class="feedback" id="rfMsg"></span>
+  </footer>
+</aside>
+
 <script>
 (function(){
   "use strict";
 
-  var SHEET_ID  = "1A_qQ1_JAAZn6Vbadf5Kelnrxc7sAvFLo";
-  var SHEET_URL = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/edit";
-  var HTML_URL  = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/htmlview";
-  var IS_FILE   = location.protocol === "file:";
-  var STORE_KEY = "speech.followup.site";
+  var SHEET_ID   = "1rNVDp4bOw6BQvWfDipiy2TDcBQDV2RPy69TZK2l75fU";
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzU9VvKNkDqgac-iSiWT0KSJ6OICPQJQR1WXCeXKdkG1lYtnAoORZrsQfpnlVTGbZ0L/exec";    /* script da planilha que cria as abas (protegido por PIN) */
+  var SHEET_URL  = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/edit";
+  var HTML_URL   = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/htmlview";
+  var IS_FILE    = location.protocol === "file:";
+  var STORE_KEY  = "speech.followup.site";
+  var PIN_KEY    = "speech.followup.pin";
 
   /* Quem só supervisiona: a linha é ignorada em qualquer aba. */
   var SUPERVISORES = ["pietro"];
 
-  /* As etapas são sempre as mesmas colunas; o que muda por rodada são as datas. */
-  var BASE_STAGES = [
-    { id:"lista", label:"Formular lista de leads", short:"Lista de leads", date:"" },
-    { id:"m1",    label:"1ª mensagem",             short:"1ª mensagem",    date:"" },
-    { id:"m2",    label:"2ª mensagem + próxima lista", short:"2ª mensagem", date:"" },
-    { id:"m3",    label:"3ª mensagem",             short:"3ª mensagem",    date:"" }
+  /* Tipos de rodada: quantas mensagens costuma ter e quantos dias até o prazo final. */
+  var TIPOS = [
+    { id:"Empresas",      n:3, dias:6 },
+    { id:"Instagram",     n:1, dias:2 },
+    { id:"Pessoa física", n:1, dias:2 }
   ];
+  function tipoFrom(text){
+    var t = normName(text);
+    if(/instagram|insta\b/.test(t)) return "Instagram";
+    if(/pessoa fisica|consumidor|\bpf\b/.test(t)) return "Pessoa física";
+    if(/empresa/.test(t)) return "Empresas";
+    return "";
+  }
+  function tipoDef(id){ return TIPOS.filter(function(t){ return t.id === id; })[0] || TIPOS[0]; }
+
   function newRound(){
-    return { stages: JSON.parse(JSON.stringify(BASE_STAGES)), status: {}, members: [], loaded: false };
+    return { stages: [], status: {}, members: [], tipo: "", loaded: false };
   }
 
   var DEFAULTS = {
+    sheetId: SHEET_ID,
     tabs: [],          /* abas da planilha, descobertas a cada sincronização */
     knownTabs: [],     /* gids já vistos — aba nova = rodada nova, selecionada sozinha */
     current: null,
@@ -450,11 +534,12 @@
         body:"Oi [NOME], vi que sua lista de leads ainda não entrou. Consegue mandar até [DATA]? Se precisar de ajuda pra fechar, me chama." }
     ],
     groupLink: "",
-    lastSync: null
+    lastSync: null,
+    pendingTab: null   /* aba recém-criada pelo painel que o Google ainda não listou */
   };
 
   var S = JSON.parse(JSON.stringify(DEFAULTS));
-  var calMonth = null, ctx = null, syncError = false;
+  var calMonth = null, ctx = null;
   var $ = function(id){ return document.getElementById(id); };
   var MONTHS = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
   var DOW = ["D","S","T","Q","Q","S","S"];
@@ -469,13 +554,14 @@
     return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
   }
   function isSupervisor(name){ return SUPERVISORES.indexOf(normName(name)) >= 0; }
+  function stageColor(i){ return "var(--s" + (i % 6) + ")"; }
 
   /* ---------- rodadas ---------- */
   function RND(){
     if(!S.current) S.current = S.tabs.length ? S.tabs[S.tabs.length-1].gid : "0";
     if(!S.rounds[S.current]) S.rounds[S.current] = newRound();
     var r = S.rounds[S.current];
-    if(!Array.isArray(r.stages) || r.stages.length !== 4) r.stages = JSON.parse(JSON.stringify(BASE_STAGES));
+    if(!Array.isArray(r.stages)) r.stages = [];
     if(!r.status || typeof r.status !== "object") r.status = {};
     if(!Array.isArray(r.members)) r.members = [];
     return r;
@@ -505,31 +591,44 @@
   function tabUrl(gid){ return SHEET_URL + "#gid=" + encodeURIComponent(gid || S.current || "0"); }
 
   /* ---------- datas ---------- */
-  function todayISO(){
-    var d = new Date();
-    return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate());
-  }
+  function todayISO(){ return isoOf(new Date()); }
+  function isoOf(d){ return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()); }
   function pad(n){ return (n<10?"0":"") + n; }
   function toDate(iso){ var p = String(iso).split("-"); return new Date(+p[0], +p[1]-1, +p[2]); }
+  function addDays(iso, n){ var d = toDate(iso); d.setDate(d.getDate() + n); return isoOf(d); }
   function diffDays(isoA, isoB){ return Math.round((toDate(isoA) - toDate(isoB)) / 86400000); }
   function fmtBR(iso){ if(!iso) return "—"; var p = iso.split("-"); return p[2] + "/" + p[1]; }
   function fmtLong(iso){ var d = toDate(iso); return d.getDate() + " de " + MONTHS[d.getMonth()]; }
+  /* "15/9" sem ano: escolhe o ano que deixa a data mais perto de hoje (vale na virada do ano) */
+  function inferYear(day, month){
+    var now = new Date(), y = now.getFullYear();
+    var diff = (new Date(y, month-1, day) - now) / 86400000;
+    if(diff > 183) y--; else if(diff < -183) y++;
+    return y;
+  }
 
   /* ---------- persistência (só este navegador) ---------- */
   function normalize(raw){
     if(!raw || typeof raw !== "object") return;
+    if(raw.phones && typeof raw.phones === "object") S.phones = raw.phones;
+    if(Array.isArray(raw.templates) && raw.templates.length) S.templates = raw.templates;
+    if(typeof raw.groupLink === "string") S.groupLink = raw.groupLink;
+    /* planilha trocou: telefones, modelos e grupo ficam; rodadas antigas não servem mais */
+    if(raw.sheetId !== SHEET_ID) return;
     if(Array.isArray(raw.tabs)) S.tabs = raw.tabs;
     if(Array.isArray(raw.knownTabs)) S.knownTabs = raw.knownTabs;
     if(raw.current) S.current = raw.current;
     if(raw.rounds && typeof raw.rounds === "object") S.rounds = raw.rounds;
-    if(raw.phones && typeof raw.phones === "object") S.phones = raw.phones;
-    if(Array.isArray(raw.templates) && raw.templates.length) S.templates = raw.templates;
-    if(typeof raw.groupLink === "string") S.groupLink = raw.groupLink;
     S.lastSync = raw.lastSync || null;
+    S.pendingTab = raw.pendingTab || null;
   }
   function save(){
+    S.sheetId = SHEET_ID;
     try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }catch(e){}
   }
+  function getPin(){ try{ return localStorage.getItem(PIN_KEY) || ""; }catch(e){ return ""; } }
+  function setPin(v){ try{ if(v) localStorage.setItem(PIN_KEY, v); else localStorage.removeItem(PIN_KEY); }catch(e){} }
+
   function boot(){
     try{
       var local = localStorage.getItem(STORE_KEY);
@@ -554,7 +653,7 @@
       var miss = missingFor(st), delta = diffDays(st.date, t);
       if(!miss.length) return;
 
-      if(st.id === "lista"){
+      if(st.kind === "lista"){
         if(delta > 0 && delta <= 7)
           alerts.push({ tone:"soon", stage:st, tpl:"t1", miss:miss,
             t1:"Lista de leads vence em " + delta + (delta===1?" dia":" dias"),
@@ -612,10 +711,10 @@
   }
   function hideWarn(){ $("fileWarn").hidden = true; }
 
-  function showNewRound(gid){
+  function showNewRound(gid, created){
     var el = $("newRound");
-    el.innerHTML = "<div><b>Nova rodada na planilha:</b> " + esc(roundLabel(gid)) + " · aba " + esc(tabName(gid)) +
-                   ". O painel já mudou para ela.</div>";
+    el.innerHTML = "<div><b>" + (created ? "Rodada criada na planilha:" : "Nova rodada na planilha:") + "</b> " +
+                   esc(roundLabel(gid)) + " · aba " + esc(tabName(gid)) + ". O painel já mudou para ela.</div>";
     el.hidden = false;
     setTimeout(function(){ el.hidden = true; }, 9000);
   }
@@ -628,20 +727,20 @@
     if(!RND().loaded){
       msg = "Lendo a aba <em>" + esc(tabName(S.current)) + "</em> da planilha…";
     } else if(hoje.length){
-      msg = "Hoje é dia de <em>" + hoje.map(function(s){ return s.label.toLowerCase(); }).join(" e ") + "</em>.";
+      msg = "Hoje é dia de <em>" + hoje.map(function(s){ return esc(s.label.toLowerCase()); }).join(" e ") + "</em>.";
     } else {
       var next = stages.filter(function(st){ return st.date && diffDays(st.date, t) > 0; })
                        .sort(function(a,b){ return a.date < b.date ? -1 : 1; })[0];
       msg = next
-        ? "Próxima etapa: <em>" + next.label.toLowerCase() + "</em> em " + fmtLong(next.date) + "."
-        : "Nenhuma etapa futura nesta rodada — se a semana virou, crie a aba da próxima rodada na planilha.";
+        ? "Próxima etapa: <em>" + esc(next.label.toLowerCase()) + "</em> em " + fmtLong(next.date) + "."
+        : "Nenhuma etapa futura nesta rodada — se a semana virou, crie a próxima em <b>+ Nova rodada</b>.";
     }
     el.innerHTML =
       '<div class="date mono">' + pad(d.getDate()) + "/" + pad(d.getMonth()+1) + "/" + d.getFullYear() + '</div>' +
       '<div class="msg">' + msg + '</div>' +
       '<button class="btn btn-sm" id="btnGroupFree">Mensagem avulsa no grupo</button>';
     $("btnGroupFree").onclick = function(){
-      openDrawer({ kind:"grupo", stage:stages.filter(function(s){return s.date===t;})[0] || stages[0], tpl:null });
+      openDrawer({ kind:"grupo", stage:stages.filter(function(s){return s.date===t;})[0] || stages[0] || null, tpl:null });
     };
   }
 
@@ -674,7 +773,7 @@
       var cls = "day ro" + (c.out ? " out" : "") + (c.iso === t ? " today" : "") + (st ? " has" : "");
       html += '<div class="' + cls + '"' + (st ? ' title="' + esc(st.label) + '"' : "") + '>' +
         '<span class="num mono">' + c.d + "</span>" +
-        (st ? '<span class="pip" style="background:var(--s' + stageIndex(st.id) + ')">' + (stageIndex(st.id)+1) + "</span>" : "") +
+        (st ? '<span class="pip" style="background:' + stageColor(stageIndex(st.id)) + '">' + (stageIndex(st.id)+1) + "</span>" : "") +
         "</div>";
     });
     el.innerHTML = html + "</div>";
@@ -686,20 +785,25 @@
 
   /* ---------- render: etapas (só leitura) ---------- */
   function renderStages(){
-    var el = $("stages"), team = TEAM(); el.innerHTML = "";
-    RND().stages.forEach(function(st, i){
+    var el = $("stages"), team = TEAM(), r = RND(); el.innerHTML = "";
+    if(r.loaded && !r.stages.length){
+      el.innerHTML = '<div class="stage"><span class="nm">Esta aba ainda não tem colunas de mensagem.</span></div>';
+    }
+    r.stages.forEach(function(st, i){
       var feito = team.filter(function(m){ return done(m.name, st.id); }).length;
       var row = document.createElement("div");
       row.className = "stage";
       row.innerHTML =
-        '<span class="sq" style="background:var(--s' + i + ')">' + (i+1) + "</span>" +
-        '<span class="nm">' + st.label + "<small>" + (st.date ? "prazo " + fmtLong(st.date) : "sem data na planilha") + "</small></span>" +
+        '<span class="sq" style="background:' + stageColor(i) + '">' + (i+1) + "</span>" +
+        '<span class="nm">' + esc(st.label) + "<small>" + (st.date ? "prazo " + fmtLong(st.date) : "sem data na planilha") + "</small></span>" +
         '<span class="prog">' + team.map(function(m){ return '<i class="' + (done(m.name, st.id) ? "on" : "") + '"></i>'; }).join("") +
         "<span>" + feito + "/" + team.length + "</span></span>" +
         '<span class="sdate mono">' + fmtBR(st.date) + "</span>";
       el.appendChild(row);
     });
-    $("agendaHint").innerHTML = "Datas da linha 2 da aba <b>" + esc(tabName(S.current)) + '</b> · <a href="' + tabUrl() + '" target="_blank" rel="noopener">editar na planilha ↗</a>';
+    $("agendaHint").innerHTML = "Datas da linha 2 da aba <b>" + esc(tabName(S.current)) + "</b>" +
+      (r.tipo ? " · rodada de <b>" + esc(r.tipo) + "</b>" : "") +
+      ' · <a href="' + tabUrl() + '" target="_blank" rel="noopener">editar na planilha ↗</a>';
   }
 
   /* ---------- render: pendências ---------- */
@@ -724,16 +828,17 @@
       return;
     }
     if(!TEAM().length){
-      pc.innerHTML = '<div class="empty"><b>Nenhum vendedor nesta aba.</b>Adicione os nomes na coluna Vendedor da aba ' + esc(tabName(S.current)) + ".</div>";
+      pc.innerHTML = '<div class="empty"><b>Nenhum vendedor nesta aba.</b>Adicione os nomes na coluna Vendedor da aba ' + esc(tabName(S.current)) +
+                     " — ou crie a rodada pelo botão <b>+ Nova rodada</b>.</div>";
       $("pendHint").textContent = "";
       return;
     }
     if(!r.people.length){
-      pc.innerHTML = '<div class="empty"><b>Ninguém devendo etapa.</b>Todas as etapas com prazo até hoje estão marcadas como feitas na planilha.</div>';
+      pc.innerHTML = '<div class="empty"><b>Ninguém devendo mensagem.</b>Todas as etapas com prazo até hoje estão marcadas como feitas na planilha.</div>';
       $("pendHint").textContent = r.alerts.length ? r.alerts.length + " aviso(s) de calendário" : "tudo em dia";
       return;
     }
-    $("pendHint").textContent = r.people.length + " pessoa(s) devendo etapa";
+    $("pendHint").textContent = r.people.length + " pessoa(s) devendo mensagem";
     var wrap = document.createElement("div");
     wrap.className = "pcards";
     r.people.forEach(function(p){
@@ -745,8 +850,8 @@
       card.innerHTML =
         '<div class="row1"><span class="who">' + esc(p.member.name) + "</span>" + chip + "</div>" +
         '<div class="missing">' + p.miss.map(function(st){
-          return "<div><span class='sq' style='background:var(--s" + stageIndex(st.id) + ")'>" + (stageIndex(st.id)+1) + "</span>" +
-                 st.short + ' <span class="mono" style="color:var(--ink-faint)">' + fmtBR(st.date) + "</span></div>";
+          return "<div><span class='sq' style='background:" + stageColor(stageIndex(st.id)) + "'>" + (stageIndex(st.id)+1) + "</span>" +
+                 esc(st.short) + ' <span class="mono" style="color:var(--ink-faint)">' + fmtBR(st.date) + "</span></div>";
         }).join("") + "</div>" +
         '<div class="fone mono' + (p.member.phone ? "" : " nophone") + '">' + (p.member.phone ? esc(p.member.phone) : "sem número — cadastre em Telefones") + "</div>";
 
@@ -772,17 +877,18 @@
   function renderGrid(){
     var t = todayISO(), stages = RND().stages, team = TEAM();
     var head = "<thead><tr><th>Vendedor</th>" + stages.map(function(st){
-      return "<th>" + st.short + '<span class="d mono">' + fmtBR(st.date) +
+      return "<th>" + esc(st.short) + '<span class="d mono">' + fmtBR(st.date) +
              (st.date && diffDays(st.date,t) === 0 ? " · hoje" : "") + "</span></th>";
     }).join("") + "</tr></thead>";
     var body = "<tbody>" + (team.length ? team.map(function(m){
       return "<tr><td class='name'>" + esc(m.name) + "</td>" +
         stages.map(function(st){
           var on = done(m.name, st.id);
-          return "<td><span class='cell" + (on ? " on" : "") + "' aria-label='" + esc(m.name) + " · " + st.short + ": " + (on ? "feito" : "pendente") + "'>" +
+          return "<td><span class='cell" + (on ? " on" : "") + "' aria-label='" + esc(m.name) + " · " + esc(st.short) + ": " + (on ? "feito" : "pendente") + "'>" +
                  (on ? "✓" : "—") + "</span></td>";
         }).join("") + "</tr>";
-    }).join("") : "<tr><td colspan='5' class='name' style='color:var(--ink-faint)'>Aguardando a planilha…</td></tr>") + "</tbody>";
+    }).join("") : "<tr><td colspan='" + (stages.length + 1) + "' class='name' style='color:var(--ink-faint)'>" +
+                  (RND().loaded ? "Nenhum vendedor nesta aba." : "Aguardando a planilha…") + "</td></tr>") + "</tbody>";
     $("grid").innerHTML = head + body;
     $("gridHint").innerHTML = "Espelho da aba <b>" + esc(tabName(S.current)) + '</b> · para marcar entregas, <a href="' + tabUrl() + '" target="_blank" rel="noopener">edite na planilha ↗</a>';
   }
@@ -815,16 +921,21 @@
     el.innerHTML = '<span class="lbl">Rodada</span>';
     if(!S.tabs.length){
       el.insertAdjacentHTML("beforeend", '<span class="lbl" style="letter-spacing:.04em;text-transform:none">lendo abas da planilha…</span>');
-      return;
     }
     S.tabs.forEach(function(t, i){
       var b = document.createElement("button");
+      var r = S.rounds[t.gid];
       b.className = "rtab";
       b.setAttribute("aria-current", t.gid === S.current ? "true" : "false");
-      b.innerHTML = "<b>Rodada " + (i+1) + "</b><span>" + esc(t.name) + "</span>";
+      b.innerHTML = "<b>Rodada " + (i+1) + "</b><span>" + esc(t.name) + (r && r.tipo ? " · " + esc(r.tipo) : "") + "</span>";
       b.onclick = function(){ switchRound(t.gid); };
       el.appendChild(b);
     });
+    var add = document.createElement("button");
+    add.className = "rtab add";
+    add.innerHTML = "<b>+ Nova rodada</b><span>criar aba</span>";
+    add.onclick = openRoundForm;
+    el.appendChild(add);
   }
 
   function switchRound(gid){
@@ -852,10 +963,10 @@
   function pickTemplate(c){
     if(c.tpl) return c.tpl;
     if(c.kind === "grupo"){
-      if(c.stage && c.stage.id === "lista") return diffDays(c.stage.date, todayISO()) > 0 ? "t1" : "t2";
+      if(c.stage && c.stage.kind === "lista") return diffDays(c.stage.date, todayISO()) > 0 ? "t1" : "t2";
       return "t4";
     }
-    return (c.stage && c.stage.id === "lista") ? "t5" : "t3";
+    return (c.stage && c.stage.kind === "lista") ? "t5" : "t3";
   }
   function fill(body, c){
     var nome = c.member ? c.member.name.split(" ")[0] : "";
@@ -883,7 +994,7 @@
     $("dwText").value = tpl ? fill(tpl.body, c) : "";
     $("dwKind").textContent = c.kind === "grupo" ? "Grupo de vendas" : "Mensagem particular";
     $("dwTo").innerHTML = c.kind === "grupo"
-      ? "Grupo de vendas<small>" + (c.stage ? c.stage.label + " · " + fmtBR(c.stage.date) : "") + "</small>"
+      ? "Grupo de vendas<small>" + (c.stage ? esc(c.stage.label) + " · " + fmtBR(c.stage.date) : "") + "</small>"
       : esc(c.member.name) + "<small>" + esc(c.member.phone || "sem número") + "</small>";
     $("dwNote").textContent = c.kind === "grupo"
       ? "Grupo não aceita mensagem pronta por link: clique em Copiar texto, abra o grupo e cole. Cadastre o link do grupo no painel para o botão abrir direto nele."
@@ -893,7 +1004,7 @@
     $("scrim").hidden = false; $("drawer").hidden = false;
     $("dwText").focus();
   }
-  function closeDrawer(){ $("scrim").hidden = true; $("drawer").hidden = true; ctx = null; }
+  function closeDrawer(){ $("drawer").hidden = true; ctx = null; if($("roundForm").hidden) $("scrim").hidden = true; }
 
   $("dwTpl").onchange = function(){
     var tpl = S.templates.filter(function(tp){ return tp.id === $("dwTpl").value; })[0];
@@ -901,8 +1012,12 @@
   };
   $("dwText").oninput = refreshHref;
   $("dwClose").onclick = closeDrawer;
-  $("scrim").onclick = closeDrawer;
-  document.addEventListener("keydown", function(e){ if(e.key === "Escape" && !$("drawer").hidden) closeDrawer(); });
+  $("scrim").onclick = function(){ closeDrawer(); closeRoundForm(); };
+  document.addEventListener("keydown", function(e){
+    if(e.key !== "Escape") return;
+    if(!$("drawer").hidden) closeDrawer();
+    else if(!$("roundForm").hidden) closeRoundForm();
+  });
 
   $("dwCopy").onclick = function(){
     var ta = $("dwText"), btn = $("dwCopy");
@@ -922,6 +1037,213 @@
     openDrawer(c); $("dwTpl").value = S.templates[S.templates.length-1].id; $("dwText").value = keep; refreshHref();
   };
 
+  /* ---------- nova rodada ---------- */
+  var NR = null;   /* estado do formulário */
+
+  function nextTabName(){
+    var max = 0;
+    S.tabs.forEach(function(t){ var n = parseInt(t.name, 10); if(/^\d+$/.test(t.name.trim()) && n > max) max = n; });
+    return max ? pad(max + 1) : "Rodada " + (S.tabs.length + 1);
+  }
+  /* Espalha N mensagens entre o início e o prazo final (a última cai no prazo). */
+  function distribute(){
+    var n = NR.n, span = Math.max(0, diffDays(NR.end, NR.start));
+    NR.dates = [];
+    for(var i = 0; i < n; i++){
+      NR.dates.push(n === 1 ? NR.end : addDays(NR.start, Math.round(i * span / (n - 1))));
+    }
+  }
+  function fetchRoundOf(gid){
+    return fetch(csvUrl(gid), { cache:"no-store" })
+      .then(function(r){ return r.ok ? r.text() : Promise.reject(); })
+      .then(parseSheet);
+  }
+
+  function openRoundForm(){
+    var tipo = tipoDef("Empresas");
+    NR = { name: nextTabName(), reuse: false, tipo: tipo.id, n: tipo.n,
+           start: todayISO(), end: addDays(todayISO(), tipo.dias), dates: [],
+           members: [], base: null, busy: false };
+    distribute();
+    $("rfMsg").textContent = ""; $("rfMsg").className = "feedback";
+    $("rfBase").textContent = "lendo a rodada anterior…";
+    $("scrim").hidden = false; $("roundForm").hidden = false;
+    renderRoundForm();
+
+    /* Base: a rodada mais recente que tem vendedores. Se a última aba existe mas está vazia
+       (criada à mão), o formulário preenche ela em vez de criar outra. */
+    var tabs = S.tabs.slice().reverse();
+    function step(i){
+      if(i >= tabs.length || i >= 5) return Promise.resolve();
+      return fetchRoundOf(tabs[i].gid).then(function(r){
+        if(i === 0 && !r.members.length){ NR.name = tabs[0].name; NR.reuse = true; }
+        if(!r.members.length) return step(i + 1);
+        NR.members = r.members.slice();
+        NR.base = tabs[i].name;
+        var msgs = r.stages.filter(function(s){ return s.kind !== "lista"; }).length;
+        if(r.tipo){ NR.tipo = r.tipo; NR.end = addDays(NR.start, tipoDef(r.tipo).dias); }
+        if(msgs){ NR.n = Math.min(msgs, 10); }
+        distribute();
+      }).catch(function(){ return step(i + 1); });
+    }
+    step(0).then(function(){
+      $("rfBase").textContent = NR.base
+        ? "Baseada na aba " + NR.base + " — mude o que quiser"
+        : "Preencha os dados da rodada";
+      renderRoundForm();
+    });
+  }
+  function closeRoundForm(){
+    if(NR && NR.busy) return;
+    $("roundForm").hidden = true; NR = null;
+    if($("drawer").hidden) $("scrim").hidden = true;
+  }
+  $("rfClose").onclick = closeRoundForm;
+
+  function renderRoundForm(){
+    if(!NR) return;
+    var body = $("rfBody");
+    var exists = S.tabs.some(function(t){ return t.name.trim() === NR.name.trim(); });
+    var html = "";
+
+    html += '<div><label for="rfName">Nome da aba</label>' +
+            '<input type="text" id="rfName" value="' + esc(NR.name) + '" maxlength="40">' +
+            '<div class="rf-hint">' + (exists
+              ? (NR.reuse ? "A aba <b>" + esc(NR.name) + "</b> já existe e está vazia — ela será preenchida."
+                          : "Já existe uma aba com esse nome. Se ela tiver vendedores, a planilha recusa.")
+              : "Vai aparecer como uma aba nova no fim da planilha.") + "</div></div>";
+
+    html += '<div><label>Tipo de prospecção</label><div class="seg" role="radiogroup">' +
+      TIPOS.map(function(t){
+        return '<button type="button" role="radio" aria-checked="' + (NR.tipo === t.id) + '" data-tipo="' + esc(t.id) + '">' +
+               esc(t.id) + "<small>" + t.n + (t.n === 1 ? " mensagem" : " mensagens") + "</small></button>";
+      }).join("") + "</div></div>";
+
+    html += '<div class="rf-row"><div><label>Quantas mensagens</label>' +
+            '<div class="stepper"><button type="button" data-n="-1" aria-label="Menos uma">−</button>' +
+            '<span class="mono">' + NR.n + '</span>' +
+            '<button type="button" data-n="1" aria-label="Mais uma">+</button></div></div>' +
+            '<div><label for="rfStart">Início</label><input type="date" id="rfStart" value="' + NR.start + '"></div>' +
+            '<div><label for="rfEnd">Prazo final</label><input type="date" id="rfEnd" value="' + NR.end + '"></div></div>';
+
+    html += '<div><label>Datas de cada mensagem</label><div class="datelist">' +
+      NR.dates.map(function(d, i){
+        return '<div class="dl-row"><span class="sq" style="background:' + stageColor(i) + '">' + (i+1) + "</span>" +
+               "<span>" + (i+1) + "ª mensagem</span>" +
+               '<input type="date" data-di="' + i + '" value="' + d + '"></div>';
+      }).join("") + '</div><div class="rf-hint">Espalhadas entre o início e o prazo final. Ajuste qualquer uma.</div></div>';
+
+    html += '<div><label>Quem entra nesta rodada</label><div class="people">' +
+      NR.members.map(function(m, i){
+        return '<span class="person">' + esc(m) + '<button type="button" data-rm="' + i + '" aria-label="Tirar ' + esc(m) + '">✕</button></span>';
+      }).join("") +
+      (NR.members.length ? "" : '<span class="rf-hint">Ninguém ainda.</span>') +
+      '</div><div class="addperson"><input type="text" id="rfAdd" placeholder="Nome de quem entra (trainee, vendedor…)" maxlength="60">' +
+      '<button type="button" class="btn btn-sm" id="rfAddBtn">Adicionar</button></div></div>';
+
+    html += '<div><label>Como a aba vai ficar</label><div class="rf-preview"><table><thead><tr><th>Vendedor' + (NR.tipo ? " · " + esc(NR.tipo) : "") + "</th>" +
+      NR.dates.map(function(d, i){ return "<th>" + (i+1) + "ª mensagem<span class='d mono'>" + fmtBR(d) + "</span></th>"; }).join("") +
+      "</tr></thead><tbody>" +
+      NR.members.map(function(m){
+        return "<tr><td class='name'>" + esc(m) + "</td>" + NR.dates.map(function(){ return "<td><span class='cell'>☐</span></td>"; }).join("") + "</tr>";
+      }).join("") + "</tbody></table></div></div>";
+
+    if(!getPin()){
+      html += '<div><label for="rfPin">PIN do painel</label><input type="password" id="rfPin" inputmode="numeric" autocomplete="off" placeholder="6 dígitos">' +
+              '<div class="rf-hint">Pedido só uma vez neste navegador. Sem ele a planilha não aceita criar abas.</div></div>';
+    }
+    body.innerHTML = html;
+
+    $("rfName").oninput = function(){ NR.name = this.value; NR.reuse = false; };
+    $("rfName").onchange = renderRoundForm;
+    body.querySelectorAll("[data-tipo]").forEach(function(b){
+      b.onclick = function(){
+        var t = tipoDef(b.dataset.tipo);
+        NR.tipo = t.id; NR.n = t.n; NR.end = addDays(NR.start, t.dias);
+        distribute(); renderRoundForm();
+      };
+    });
+    body.querySelectorAll("[data-n]").forEach(function(b){
+      b.onclick = function(){
+        NR.n = Math.max(1, Math.min(10, NR.n + (+b.dataset.n)));
+        distribute(); renderRoundForm();
+      };
+    });
+    $("rfStart").onchange = function(){
+      if(!this.value) return;
+      NR.start = this.value;
+      if(diffDays(NR.end, NR.start) < 0) NR.end = NR.start;
+      distribute(); renderRoundForm();
+    };
+    $("rfEnd").onchange = function(){
+      if(!this.value) return;
+      NR.end = this.value;
+      if(diffDays(NR.end, NR.start) < 0) NR.start = NR.end;
+      distribute(); renderRoundForm();
+    };
+    body.querySelectorAll("[data-di]").forEach(function(inp){
+      inp.onchange = function(){ if(this.value){ NR.dates[+this.dataset.di] = this.value; renderRoundForm(); } };
+    });
+    body.querySelectorAll("[data-rm]").forEach(function(b){
+      b.onclick = function(){ NR.members.splice(+b.dataset.rm, 1); renderRoundForm(); };
+    });
+    function addPerson(){
+      var v = $("rfAdd").value.replace(/\s+/g, " ").trim();
+      if(!v) return;
+      if(isSupervisor(v)){ $("rfMsg").className = "feedback bad"; $("rfMsg").textContent = v + " é supervisor — não entra na cobrança."; return; }
+      if(NR.members.some(function(m){ return normName(m) === normName(v); })) return;
+      NR.members.push(v); renderRoundForm(); $("rfAdd").focus();
+    }
+    $("rfAddBtn").onclick = addPerson;
+    $("rfAdd").onkeydown = function(e){ if(e.key === "Enter"){ e.preventDefault(); addPerson(); } };
+  }
+
+  $("rfCreate").onclick = function(){
+    if(!NR || NR.busy) return;
+    var msg = $("rfMsg"), btn = $("rfCreate");
+    var pinField = $("rfPin");
+    if(pinField && pinField.value.trim()) setPin(pinField.value.trim());
+    var name = NR.name.trim();
+    function fail(t){ msg.className = "feedback bad"; msg.textContent = t; }
+
+    if(!SCRIPT_URL || SCRIPT_URL.indexOf("http") !== 0) return fail("O painel ainda não está ligado à planilha para criar abas.");
+    if(!name) return fail("Dê um nome para a aba.");
+    if(!NR.members.length) return fail("Adicione pelo menos uma pessoa.");
+    if(!getPin()) return fail("Digite o PIN do painel.");
+    var sorted = NR.dates.slice().sort();
+    if(sorted.join() !== NR.dates.join()) return fail("As datas estão fora de ordem: a 1ª mensagem precisa vir antes da 2ª, e assim por diante.");
+
+    var payload = {
+      action: "createRound", pin: getPin(), name: name, tipo: NR.tipo, members: NR.members,
+      steps: NR.dates.map(function(d, i){ return { label: (i+1) + "ª mensagem", date: fmtBR(d) }; })
+    };
+    NR.busy = true; btn.disabled = true; btn.textContent = "Criando na planilha…";
+    msg.className = "feedback"; msg.textContent = "";
+
+    fetch(SCRIPT_URL, { method:"POST", headers:{ "Content-Type":"text/plain;charset=utf-8" }, body: JSON.stringify(payload) })
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        NR.busy = false; btn.disabled = false; btn.textContent = "Criar rodada na planilha";
+        if(!res.ok){
+          if(res.error === "pin"){ setPin(""); renderRoundForm(); return fail("PIN incorreto. Digite de novo."); }
+          return fail(res.detail || "A planilha recusou o pedido (" + res.error + ").");
+        }
+        var gid = String(res.gid);
+        if(tabIndex(gid) < 0) S.tabs.push({ gid:gid, name:res.name });
+        if(S.knownTabs.indexOf(gid) < 0) S.knownTabs.push(gid);
+        S.pendingTab = { gid:gid, name:res.name };
+        delete S.rounds[gid];
+        S.current = gid; calMonth = null;
+        save(); closeRoundForm(); renderAll();
+        showNewRound(gid, true);
+        lastAuto = 0; autoSync();
+      })
+      .catch(function(){
+        NR.busy = false; btn.disabled = false; btn.textContent = "Criar rodada na planilha";
+        fail("Não consegui falar com a planilha. Confira a internet e tente de novo — se a aba tiver sido criada, ela aparece ao sincronizar.");
+      });
+  };
+
   /* ---------- leitura da planilha ---------- */
   $("groupLink").onchange = function(){ S.groupLink = $("groupLink").value.trim(); save(); };
 
@@ -938,60 +1260,73 @@
     return out;
   }
   var TRUEY = /^(true|verdadeiro|sim|ok|x|✓|1|feito)$/i;
+  var DATE_RE = /^(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?$/;
 
   function looksLikeSheet(text){
     if(!text || text.length < 12) return false;
     var lines = text.split(/\r?\n/);
     if(lines.length < 2) return false;
-    return /vendedor/i.test(lines[0]) ||
+    return /vendedor|mensagem/i.test(lines[0]) ||
            lines.some(function(l){ return /\b(true|false|verdadeiro|falso)\b/i.test(l); }) ||
            lines.some(function(l){ return (l.match(/\b\d{1,2}\/\d{1,2}\b/g) || []).length >= 2; });
   }
 
-  /* Reconstrói a rodada inteira a partir da aba: quem saiu some, trainee novo aparece. */
-  function applySheetText(raw){
-    var rows = String(raw).trim().split(/\r?\n/).map(splitLine).map(function(r){ return r.map(function(c){ return c.trim(); }); });
-    var round = newRound(), datesFound = 0, ignored = [];
+  /* Lê uma aba: linha 1 = cabeçalho (cada coluna depois da 1ª é uma etapa),
+     linha 2 = datas, demais = vendedor + ✓. Funciona com qualquer número de mensagens. */
+  function parseSheet(raw){
+    var rows = String(raw).replace(/\s+$/, "").split(/\r?\n/).map(splitLine)
+                 .map(function(r){ return r.map(function(c){ return c.trim(); }); });
+    var round = newRound();
+    if(!rows.length) return round;
 
-    rows.forEach(function(r){
-      if(!r.length) return;
+    var header = rows[0];
+    round.tipo = tipoFrom(header[0]);
+    for(var j = 1; j < header.length; j++){
+      var label = header[j];
+      if(!label) continue;
+      round.stages.push({ id:"c" + j, col:j, label:label, short:label.split("+")[0].trim(),
+                          kind: /lista/i.test(label) ? "lista" : "msg", date:"" });
+    }
+
+    rows.slice(1).forEach(function(r){
       var first = r[0];
-      var isDateRow = !first && r.slice(1).some(function(c){ return /^\d{1,2}\/\d{1,2}(\/\d{2,4})?$/.test(c); });
+      var isDateRow = !first && r.slice(1).some(function(c){ return DATE_RE.test(c); });
       if(isDateRow){
-        for(var i = 1; i <= 4 && i < r.length; i++){
-          var m = /^(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?$/.exec(r[i]);
-          if(!m) continue;
-          var yy = m[3] ? (m[3].length === 2 ? 2000 + (+m[3]) : +m[3]) : new Date().getFullYear();
-          round.stages[i-1].date = yy + "-" + pad(+m[2]) + "-" + pad(+m[1]);
-          datesFound++;
-        }
+        round.stages.forEach(function(st){
+          var m = DATE_RE.exec(r[st.col] || "");
+          if(!m) return;
+          var yy = m[3] ? (m[3].length === 2 ? 2000 + (+m[3]) : +m[3]) : inferYear(+m[1], +m[2]);
+          st.date = yy + "-" + pad(+m[2]) + "-" + pad(+m[1]);
+        });
         return;
       }
       if(!first || /^vendedor/i.test(first)) return;
-      if(isSupervisor(first)){ ignored.push(first); return; }
-      if(round.members.indexOf(first) >= 0) return;
-      var flags = r.slice(1, 5);
+      if(isSupervisor(first) || round.members.indexOf(first) >= 0) return;
       round.members.push(first);
       round.status[first] = {};
-      round.stages.forEach(function(st, i){ round.status[first][st.id] = TRUEY.test(flags[i] || ""); });
+      round.stages.forEach(function(st){ round.status[first][st.id] = TRUEY.test(r[st.col] || ""); });
     });
-
-    if(!round.members.length && !datesFound) return { ok:false };
-
     round.loaded = true;
+    return round;
+  }
+
+  /* Aplica a aba lida na rodada selecionada: quem saiu some, quem entrou aparece. */
+  function applySheetText(raw){
+    var round = parseSheet(raw);
+    if(!round.stages.length && !round.members.length) return { ok:false };
     S.rounds[S.current] = round;
     var d = new Date();
     S.lastSync = pad(d.getDate()) + "/" + pad(d.getMonth()+1) + " às " + pad(d.getHours()) + ":" + pad(d.getMinutes());
     var sem = round.members.filter(function(n){ return !S.phones[normName(n)]; });
+    var datas = round.stages.filter(function(s){ return s.date; }).length;
     save(); renderAll();
-    return { ok:true, people:round.members.length, dates:datesFound, semNumero:sem };
+    return { ok:true, people:round.members.length, dates:datas, semNumero:sem };
   }
 
   function reportSync(res, via){
     var msg = $("parseMsg");
     msg.className = "feedback good";
     msg.textContent = res.people + " vendedor(es) e " + res.dates + " data(s) lidos via " + via + ".";
-    syncError = false;
     if(!IS_FILE) hideWarn();
     if(via === "planilha") $("syncBox").hidden = true;
     flash($("btnRefresh"), res.semNumero.length
@@ -1008,7 +1343,7 @@
   }
 
   /* Descobre as abas da planilha (nome + gid) direto do htmlview.
-     Toda aba nova que você criar vira uma rodada aqui sozinha. */
+     Toda aba nova vira uma rodada aqui sozinha. */
   function unescapeName(s){
     return s.replace(/\\x([0-9a-fA-F]{2})/g, function(_, h){ return String.fromCharCode(parseInt(h, 16)); })
             .replace(/\\u([0-9a-fA-F]{4})/g, function(_, h){ return String.fromCharCode(parseInt(h, 16)); })
@@ -1026,6 +1361,12 @@
         }
         if(!out.length) return Promise.reject();
 
+        /* aba que o painel acabou de criar e o Google ainda não listou: segura ela */
+        if(S.pendingTab){
+          if(seen[S.pendingTab.gid]) S.pendingTab = null;
+          else out.push(S.pendingTab);
+        }
+
         var firstVisit = !S.knownTabs.length;
         var novas = out.filter(function(t){ return S.knownTabs.indexOf(t.gid) < 0; });
         S.tabs = out;
@@ -1037,7 +1378,7 @@
         } else if(novas.length){
           S.current = novas[novas.length-1].gid;      /* aba nova = semana nova */
           calMonth = null;
-          showNewRound(S.current);
+          showNewRound(S.current, false);
         }
         /* rodadas de abas apagadas não ficam ocupando espaço */
         Object.keys(S.rounds).forEach(function(g){ if(S.knownTabs.indexOf(g) < 0) delete S.rounds[g]; });
@@ -1059,7 +1400,6 @@
   }
 
   function syncFailed(){
-    syncError = true;
     if(!IS_FILE) showWarn("sheet");
     needsManual();
     renderAll();
